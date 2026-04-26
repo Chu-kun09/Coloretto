@@ -330,10 +330,20 @@ function App() {
       </div>
       <div style={{marginTop:20,background:"rgba(255,255,255,0.03)",borderRadius:12,padding:"14px 18px",maxWidth:420,width:"100%",border:"1px solid rgba(255,255,255,0.06)"}}>
         <p style={{color:"#666",fontSize:12,margin:0,lineHeight:1.8}}>
-          📜 手番に「カードを引いて列に置く」か「列を取る」を選択。<br/>
+          📜 手番に「カードを引いて列に置く」か「列を取る」を選択。列を取るとそのラウンドは終了。<br/>
+          🌈 ジョーカーは任意の色として使用可。<br/>
           同じ色を集めると得点。4色目以降はマイナス点。<br/>
-          🌈 ジョーカーは任意の色として使用可。列を取るとそのラウンドは終了。
+          🔔 残り15枚に差し掛かると終了カードが現れ、そのラウンドが最終ラウンドになる。
         </p>
+        <div style={{marginTop:12,display:"grid",gridTemplateColumns:"repeat(6,1fr)",gap:4,textAlign:"center"}}>
+          {[1,2,3,4,5,"6+"].map((n,i)=>(
+            <div key={i} style={{background:"rgba(255,255,255,0.05)",borderRadius:8,padding:"6px 2px"}}>
+              <div style={{color:"#aaa",fontSize:11}}>{n}枚</div>
+              <div style={{color:"#f1c40f",fontWeight:"bold",fontSize:14}}>{[1,3,6,10,15,21][i]}</div>
+            </div>
+          ))}
+        </div>
+        <p style={{color:"#555",fontSize:11,margin:"8px 0 0",textAlign:"center"}}>上位3色が加点、4色目以降は同じ表で減点</p>
       </div>
     </div>
   );
@@ -417,6 +427,19 @@ function App() {
             </div>
           </div>
         )}
+        <div style={{marginTop:18,background:"rgba(255,255,255,0.03)",borderRadius:12,padding:"12px 14px",border:"1px solid rgba(255,255,255,0.06)"}}>
+          <h3 style={{color:"#444",fontSize:11,margin:"0 0 8px",textTransform:"uppercase",letterSpacing:1}}>得点表</h3>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(6,1fr)",gap:4,textAlign:"center",marginBottom:6}}>
+            {[1,2,3,4,5,"6+"].map((n,i)=>(
+              <div key={i} style={{background:"rgba(255,255,255,0.05)",borderRadius:8,padding:"5px 2px"}}>
+                <div style={{color:"#555",fontSize:10}}>{n}枚</div>
+                <div style={{color:"#f1c40f",fontWeight:"bold",fontSize:13}}>{[1,3,6,10,15,21][i]}</div>
+              </div>
+            ))}
+          </div>
+          <p style={{color:"#444",fontSize:10,margin:0,textAlign:"center"}}>上位3色が加点 / 4色目以降は同じ点数で減点</p>
+        </div>
+
         {g.log.length>0&&(
           <div style={{marginTop:14}}>
             <h3 style={{color:"#333",fontSize:11,margin:"0 0 5px",textTransform:"uppercase",letterSpacing:1}}>ログ</h3>
