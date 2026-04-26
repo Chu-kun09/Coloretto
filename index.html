@@ -171,10 +171,26 @@ function cpuDecide(g,playerIndex) {
   const waitValue=expectedAddGain-stealLoss;
   const lateBonus=deckRatio<0.3?2:deckRatio<0.5?0.8:0;
 
+  // 列の中で自分の持ち色（すでに持っているカードの色）と一致する枚数
+  const bestRowCards = g.rows[bestRow.i] || [];
+  const matchingCards = bestRowCards.filter(card =>
+    card.type === "color" && counts[card.color] > 0
+  ).length;
+  const allCardsMatch = matchingCards === bestRow.len && bestRow.len > 0;
+
+  // 序盤補正：デッキが多く残っているほど待つことを強制
+  // 例外：列の全カードがすでに持っている色なら序盤でも取ってよい
+  let earlyGamePenalty = 0;
+  if (!allCardsMatch) {
+    if (deckRatio > 0.7) earlyGamePenalty = 6;       // 序盤：かなり待つ
+    else if (deckRatio > 0.5) earlyGamePenalty = 3;  // 中盤前半：やや待つ
+    else if (deckRatio > 0.35) earlyGamePenalty = 1; // 中盤後半：少し待つ
+  }
+
   let takeThreshold;
-  if(bestRow.len>=3) takeThreshold=1;
-  else if(bestRow.len===2) takeThreshold=waitValue+1.5-lateBonus;
-  else takeThreshold=waitValue+4.5-lateBonus;
+  if(bestRow.len>=3) takeThreshold=1+earlyGamePenalty*0.3; // 3枚はほぼ取る
+  else if(bestRow.len===2) takeThreshold=waitValue+1.5-lateBonus+earlyGamePenalty;
+  else takeThreshold=waitValue+4.5-lateBonus+earlyGamePenalty;
 
   if(bestRow.gain>=takeThreshold) return {action:"take",rowIndex:bestRow.i};
   return {action:"draw"};
