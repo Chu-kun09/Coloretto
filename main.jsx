@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { createRoot } from "react-dom/client";
 
 // ==================== CONSTANTS ====================
 const COLORS = ["🔴", "🟡", "🟢", "🔵", "🟠", "🟣", "⚫"];
@@ -250,3 +251,7 @@ export default function Coloretto() {
     </div>
   );
 }
+
+const container = document.getElementById("root");
+const root = createRoot(container);
+root.render(<Coloretto />);
